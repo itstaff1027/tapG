@@ -1,0 +1,43 @@
+[gd_scene load_steps=6 format=3 uid="uid://bp0mt1yphvk0n"]
+
+[ext_resource type="Script" path="res://scene/modes/normal.gd" id="1_ki6j4"]
+[ext_resource type="PackedScene" uid="uid://d1peghm74xd2h" path="res://scene/user_interactions.tscn" id="2_mm2tp"]
+[ext_resource type="Texture2D" uid="uid://cthix54x11505" path="res://graphics/BlackBG_1080.png" id="3_l34pb"]
+[ext_resource type="Script" path="res://scene/modes/test_touch.gd" id="4_4jxbj"]
+[ext_resource type="Script" path="res://scene/modes/test_button_ui.gd" id="5_4acs6"]
+
+[node name="Normal" type="Node2D"]
+script = ExtResource("1_ki6j4")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+
+[node name="ColorRect" type="ColorRect" parent="Control"]
+layout_mode = 0
+offset_right = 1920.0
+offset_bottom = 1080.0
+
+[node name="UserInteractions" parent="Control" instance=ExtResource("2_mm2tp")]
+
+[node name="TouchScreenButton" type="TouchScreenButton" parent="."]
+position = Vector2(131, 115)
+scale = Vector2(0.1, 0.1)
+texture_normal = ExtResource("3_l34pb")
+script = ExtResource("4_4jxbj")
+
+[node name="Button" type="Button" parent="."]
+offset_left = 462.0
+offset_top = 48.0
+offset_right = 665.0
+offset_bottom = 222.0
+script = ExtResource("5_4acs6")
+
+[connection signal="pressed" from="TouchScreenButton" to="TouchScreenButton" method="_on_pressed"]

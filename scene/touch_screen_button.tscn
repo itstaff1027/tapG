@@ -1,0 +1,178 @@
+[gd_scene load_steps=12 format=3 uid="uid://be1q8vqjl5nbi"]
+
+[ext_resource type="Texture2D" uid="uid://crs66ttbqdshd" path="res://graphics/Button-Sheet.png" id="1_2x2ph"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_yj7wc"]
+radius = 141.8
+
+[sub_resource type="GDScript" id="GDScript_rulqk"]
+script/source = "extends TouchScreenButton
+
+
+# Track the current state (on or off)
+var current_state = \"off\"
+
+# AnimationPlayer node path
+@export var anim_player: AnimationPlayer
+
+var is_animated = true
+func _ready():
+	# Set the initial idle animation based on the current state
+	# Other initialization code...
+	#connect(\"pressed\", Callable(self, \"_on_pressed\"))
+	anim_player.play(current_state + \"_idle\")
+
+func set_animation_state(state: String):
+	current_state = state
+	anim_player.play(current_state + \"_idle\")
+
+
+# Function to handle button press
+func on_pressed(state: String, is_pressed: bool):
+	if is_animated:
+		anim_player.play(state + \"_pressing\")
+		$Timer.start()
+		is_animated = false
+
+# Signal callback to handle the animation transition
+#func _on_animation_finished(animation_name: String, state: String):
+	#print(\"test\")
+	#if animation_name == (state + \"_pressing\"):
+		#anim_player.queue(state + \"_pressed\")
+	
+	
+"
+
+[sub_resource type="Animation" id="Animation_paejl"]
+length = 0.001
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+
+[sub_resource type="Animation" id="Animation_d242v"]
+resource_name = "off_idle"
+length = 0.5
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+
+[sub_resource type="Animation" id="Animation_c4ibm"]
+resource_name = "off_pressed"
+length = 0.5
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(4, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+
+[sub_resource type="Animation" id="Animation_0iqp2"]
+resource_name = "off_pressing"
+length = 0.5
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0, 0, 0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0, 2, -0.25, 0, 0.25, 0, 3, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0, 0.1, 0.2)
+}
+
+[sub_resource type="Animation" id="Animation_daoub"]
+resource_name = "on_idle"
+length = 0.5
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(6, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+
+[sub_resource type="Animation" id="Animation_bljpa"]
+resource_name = "on_pressed"
+length = 0.5
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(9, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+
+[sub_resource type="Animation" id="Animation_24qi0"]
+resource_name = "on_pressing"
+length = 0.5
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0, 0, 0),
+"points": PackedFloat32Array(6, -0.25, 0, 0.25, 0, 7, -0.25, 0, 0.25, 0, 8, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0, 0.1, 0.2)
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_elfsy"]
+_data = {
+"RESET": SubResource("Animation_paejl"),
+"off_idle": SubResource("Animation_d242v"),
+"off_pressed": SubResource("Animation_c4ibm"),
+"off_pressing": SubResource("Animation_0iqp2"),
+"on_idle": SubResource("Animation_daoub"),
+"on_pressed": SubResource("Animation_bljpa"),
+"on_pressing": SubResource("Animation_24qi0")
+}
+
+[node name="TouchScreenButton" type="TouchScreenButton" node_paths=PackedStringArray("anim_player")]
+position = Vector2(-2, -65)
+scale = Vector2(0.25, 0.25)
+shape = SubResource("CircleShape2D_yj7wc")
+script = SubResource("GDScript_rulqk")
+anim_player = NodePath("AnimationPlayer")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_2x2ph")
+hframes = 10
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_elfsy")
+}
+
+[node name="Timer" type="Timer" parent="."]
+one_shot = true
