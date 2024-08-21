@@ -69,6 +69,5 @@ texture_pressed = ExtResource("3_5syyx")
 
 [node name="ResetButton2" parent="MarginContainer/HBoxContainer" instance=ExtResource("2_sqri4")]
 position = Vector2(1520, 0)
-scale = Vector2(0.340625, 0.340625)
 texture_normal = ExtResource("4_kiyeb")
 texture_pressed = ExtResource("5_rl31x")

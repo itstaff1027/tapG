@@ -18,33 +18,28 @@ func _ready():
 	for i in range(resetButton.size()):
 		var buttons = resetButton[i]
 		
-		buttons.connect("reset_button", _on_reset_buttons.bind(resetButton))
+		buttons.connect("reset_button", _on_reset_buttons)
 	
-	#connect("pressed", Callable(self, "_on_reset_button"))
 	play()
 	
 
 func _process(_delta):
-	if is_reset == true:
-		if rounds == current_round:
-			print("next round")
-			rounds = 0
-		else:
-			if index.size() == selected_indicies.size():
-				#disconnect children from previous connection
-				disconnect_children(array_children)
-				#reset arrays
-				index =  []
-				selected_indicies = []
-				play()
+	if rounds == current_round:
+		number_buttons += 1
+		rounds = 0
 	
 
 func play():
 	rounds += 1
 	
+	# The limit of buttons are only 10 so we intended to make a condition if the player 
+	# reach 10 buttons incrementation we will set the number only at 10
+	if number_buttons == 10:
+		number_buttons = 10
+	
 	var children = $Control/UserInteractions/MarginContainer/GridContainer.get_children()
 	
-	selected_indicies = get_random_indices(3, children.size())
+	selected_indicies = get_random_indices(number_buttons, children.size())
 	
 	for i in range(children.size()):
 		var child = children[i]
@@ -52,41 +47,36 @@ func play():
 		if i in selected_indicies:
 			child.set_animation_state("on")
 			child.on_clicked("on", false)
-			#change signal name to proper name
+			
 			child.connect("button_pressed", _on_value_ready.bind(children))
-			#child.pressed.connect(
-				#func () -> void:
-					#child.on_pressed("on", false)
-					#index.append(i)
-					#if index.size() == selected_indicies.size():
-						#finished(children)
-						#index.clear()
-			#)
 		else:
 			child.set_animation_state("off")
-			#child.pressed.connect(
-				#func () -> void:
-					#child.on_pressed("off", false)
-			#)
 			
 func gameover():
 	print("gameover")
 
-func _on_reset_buttons(value: bool, children: Array):
-	if pressed_count == index.size():
-		print(pressed_count)
-		print(value)
-		print("reset button")
+func _on_reset_buttons(value: bool):
+	if pressed_count == int(selected_indicies.size()):
+		pressed_count = 0
+		if index.size() == selected_indicies.size():
+			#disconnect children from previous connection
+			disconnect_children(selected_indicies)
+			#reset arrays
+			index.clear()
+			selected_indicies.clear()
+			play()
 	else:
 		print("gameover")
 	
 	
 
 # Disconnect Previous Connection
-func disconnect_children(children: Array):
+func disconnect_children(indicies: Array):
+	var children = $Control/UserInteractions/MarginContainer/GridContainer.get_children()
 	for i in range(children.size()):
 		var child = children[i]
-		child.disconnect("button_pressed", Callable(self, "_on_value_ready"))
+		if i in indicies:
+			child.disconnect("button_pressed", Callable(self, "_on_value_ready"))
 		
 # Setting Values to Variables in each click
 func _on_value_ready(value: int, children: Array):
