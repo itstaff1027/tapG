@@ -8,19 +8,19 @@ radius = 141.8
 [sub_resource type="GDScript" id="GDScript_rulqk"]
 script/source = "extends TouchScreenButton
 
-
+# change signal name into proper name
+signal button_pressed(value)
 # Track the current state (on or off)
-var current_state = \"off\"
+var current_state: String
 
 # AnimationPlayer node path
 @export var anim_player: AnimationPlayer
 
 var is_animated = true
+var is_pressed_count: int = 0
+
 func _ready():
-	# Set the initial idle animation based on the current state
-	# Other initialization code...
-	#connect(\"pressed\", Callable(self, \"_on_pressed\"))
-	anim_player.play(current_state + \"_idle\")
+	connect(\"pressed\", _on_pressed.bind(1))
 
 func set_animation_state(state: String):
 	current_state = state
@@ -28,19 +28,25 @@ func set_animation_state(state: String):
 
 
 # Function to handle button press
-func on_pressed(state: String, is_pressed: bool):
-	if is_animated:
-		anim_player.play(state + \"_pressing\")
-		$Timer.start()
-		is_animated = false
+func on_clicked(state: String, is_pressed: bool):
+	current_state = state
 
-# Signal callback to handle the animation transition
-#func _on_animation_finished(animation_name: String, state: String):
-	#print(\"test\")
-	#if animation_name == (state + \"_pressing\"):
-		#anim_player.queue(state + \"_pressed\")
+func on_reset():
+	anim_player.stop()  # Stop the currently playing animation
+	anim_player.play(\"off_idle\")
+	is_animated = true
 	
+# change parameter name into proper naming
+func _on_pressed(value: int):
+	anim_player.play(current_state + \"_pressing\")
+	# emit value when clicked
+	emit_signal(\"button_pressed\", value)
 	
+	#if connect(\"pressed\", Callable(self, \"_on_pressed\")):
+		#disconnect(\"pressed\", Callable(self, \"_on_pressed\"))
+	#
+	
+
 "
 
 [sub_resource type="Animation" id="Animation_paejl"]

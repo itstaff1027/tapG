@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://b7uyskxnb3m7v"]
+
+[ext_resource type="Script" path="res://scripts/reset_button.gd" id="1_yy77x"]
+
+[node name="ResetButton" type="TouchScreenButton"]
+position = Vector2(-105, -186)
+scale = Vector2(0.340625, 0.340625)
+script = ExtResource("1_yy77x")
