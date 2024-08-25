@@ -40,8 +40,10 @@ func on_reset():
 func _on_pressed(value: int):
 	anim_player.play(current_state + \"_pressing\")
 	# emit value when clicked
-	emit_signal(\"button_pressed\", value)
-	
+	if current_state == \"on\":
+		emit_signal(\"button_pressed\", value)
+	else:
+		emit_signal(\"button_pressed\", 0)
 	#if connect(\"pressed\", Callable(self, \"_on_pressed\")):
 		#disconnect(\"pressed\", Callable(self, \"_on_pressed\"))
 	#

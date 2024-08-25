@@ -32,7 +32,7 @@ func _process(_delta):
 func play():
 	rounds += 1
 	
-	# The limit of buttons are only 10 so we intended to make a condition if the player 
+	# The limit buttons are only 10 so we intended to make a condition if the player 
 	# reach 10 buttons incrementation we will set the number only at 10
 	if number_buttons == 10:
 		number_buttons = 10
@@ -48,12 +48,17 @@ func play():
 			child.set_animation_state("on")
 			child.on_clicked("on", false)
 			
-			child.connect("button_pressed", _on_value_ready.bind(children))
+			child.connect("button_pressed", _on_value_ready.bind(children, child.get_index()))
 		else:
 			child.set_animation_state("off")
+			child.on_clicked("off", false)
+			child.connect("button_pressed", _on_value_ready.bind(children, child.get_index()))
 			
 func gameover():
+	# instead of transfering to different scene that cause a lot of effort to retain the progress
+	# create a game over modal with animation instead and do the twicks to retain the progress
 	print("gameover")
+	
 
 func _on_reset_buttons(value: bool):
 	if pressed_count == int(selected_indicies.size()):
@@ -69,20 +74,28 @@ func _on_reset_buttons(value: bool):
 		print("gameover")
 	
 	
+	
+# FIXED: BUG WHEN THE BUTTON IS CLICKED AGAIN IT WILL CAUSED A BUG AND THE INDICIES WILL INCREMENT OR SOMETHING 
+# MUST BE CHECK IF THE CLICKED BUTTON IS ALREADY CLICKED AND DO NOT ADD UP AGAIN IN ARRAY
 
 # Disconnect Previous Connection
 func disconnect_children(indicies: Array):
 	var children = $Control/UserInteractions/MarginContainer/GridContainer.get_children()
 	for i in range(children.size()):
 		var child = children[i]
-		if i in indicies:
-			child.disconnect("button_pressed", Callable(self, "_on_value_ready"))
+		child.disconnect("button_pressed", Callable(self, "_on_value_ready"))
 		
 # Setting Values to Variables in each click
-func _on_value_ready(value: int, children: Array):
+func _on_value_ready(value: int, children: Array, child_index: int):
 	array_children = children
-	pressed_count += value
-	index.append(value)
+	if child_index in selected_indicies:
+		print(child_index)
+		if child_index not in index:
+			pressed_count += value
+			index.append(child_index)
+	else:
+		print(child_index)
+		gameover()
 
 func get_random_indices(count: int, max_value: int) -> Array:
 	var indices = []
