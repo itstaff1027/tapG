@@ -7,6 +7,7 @@ var array_children : Array = []
 var pressed_count : int = 0
 var rounds : int = 0
 var current_round : int = 5
+var score : int = 0
 @export var number_buttons : int = 3
 
 var is_reset : bool = false
@@ -26,6 +27,7 @@ func _ready():
 func _process(_delta):
 	if rounds == current_round:
 		number_buttons += 1
+		score += 1
 		rounds = 0
 	
 
@@ -47,7 +49,6 @@ func play():
 		if i in selected_indicies:
 			child.set_animation_state("on")
 			child.on_clicked("on", false)
-			
 			child.connect("button_pressed", _on_value_ready.bind(children, child.get_index()))
 		else:
 			child.set_animation_state("off")
@@ -57,7 +58,9 @@ func play():
 func gameover():
 	# instead of transfering to different scene that cause a lot of effort to retain the progress
 	# create a game over modal with animation instead and do the twicks to retain the progress
-	print("gameover")
+	var gameOver = $GameOverCLyr/GameOver
+	$GameOverCLyr/GameOver/PanelContainer/VBoxContainer/GameOverLbl.text = $GameOverCLyr/GameOver/PanelContainer/VBoxContainer/GameOverLbl.text + str(score)
+	gameOver.pause()
 	
 
 func _on_reset_buttons(value: bool):
@@ -72,7 +75,6 @@ func _on_reset_buttons(value: bool):
 			play()
 	else:
 		print("gameover")
-	
 	
 	
 # FIXED: BUG WHEN THE BUTTON IS CLICKED AGAIN IT WILL CAUSED A BUG AND THE INDICIES WILL INCREMENT OR SOMETHING 
